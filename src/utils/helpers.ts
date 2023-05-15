@@ -56,13 +56,13 @@ export function getFrequency(data: number[]) {
     return frequency;
 }
 
-export function mean(data: number[]) {
+export function getMean(data: number[]) {
     const sum = data.reduce((acc, current) => acc + Number(current),0);
-    const meanValue = sum/data.length;
-    return meanValue;
+    const mean = sum/data.length;
+    return mean;
 }
 
-export function median(data: number[]){
+export function getMedian(data: number[]){
     const length = data.length;
     const sortedData = sortData(data);
     let median = 0;
@@ -77,7 +77,17 @@ export function median(data: number[]){
     return median;
 }
 
-export function mode(data:number[]){
+export function getMode(data:number[]){
+    const mode: number[] = []
     const frequencyData = getFrequency(data);
-    console.log("frequency data set", frequencyData);
+    const frequencyValues = Object.values(frequencyData);
+    const frequencyKeys = Object.keys(frequencyData);
+    const max = Math.max(...frequencyValues); // returns max value.
+
+    frequencyKeys.forEach(element => {
+        if(frequencyData[element] === max){
+            mode.push(Number(element));
+        }
+    });
+    return mode.toString()
 }
