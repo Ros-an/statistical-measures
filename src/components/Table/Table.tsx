@@ -2,7 +2,7 @@ import React from 'react';
 
 const Table = ({ rows, columns }: any) => {
     return (
-        <table style={{ width: "100%" }}>
+        <table style={{ width: "80%" }}>
             <thead>
                 <tr>
                     {columns.map((column: any, index: any) => (
