@@ -96,7 +96,7 @@ export function getMedian(data: number[]): number {
  * @returns : stringified number with highest count/frequency
  */
 export function getMode(data: number[]): string {
-    const mode: string[] = [];
+    const mode: number[] = [];
 
     const frequencyData = getFrequency(data);
     const frequencyValues = Object.values(frequencyData);
@@ -106,7 +106,8 @@ export function getMode(data: number[]): string {
 
     frequencyKeys.forEach((element) => {
         if (frequencyData[element] === max) {
-            mode.push(Number(element).toFixed(3));
+            const roundOffValue = roundOffNumber(Number(element), 1000);
+            mode.push(roundOffValue);
         }
     });
     return mode.toString();
@@ -121,18 +122,18 @@ export function generateRowsData({
     alcoholClass,
     alocholDataByClass,
     wineProperty,
-}: GenerateRowOfMeanMedianModeProps): string[][] {
+}: GenerateRowOfMeanMedianModeProps): (string | number)[][] {
     return [
         [
             `${wineProperty} Mean`,
             ...alcoholClass.map((item) =>
-                getMean(alocholDataByClass[item].list).toFixed(3)
+                roundOffNumber(getMean(alocholDataByClass[item].list), 1000)
             ),
         ],
         [
             `${wineProperty} Median`,
             ...alcoholClass.map((item) =>
-                getMedian(alocholDataByClass[item].list).toFixed(3)
+                roundOffNumber(getMedian(alocholDataByClass[item].list), 1000)
             ),
         ],
         [
@@ -157,4 +158,13 @@ export function addGamma(wineData: WineProp[]): WineProp[] {
         };
     });
     return updatedData;
+}
+
+/**
+ * @param,
+ * @return round off to 3 decimal places
+ */
+
+export function roundOffNumber(value: number, roundOffBy: number) {
+    return Math.round(value * roundOffBy) / roundOffBy;
 }
