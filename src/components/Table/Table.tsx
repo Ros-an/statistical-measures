@@ -1,6 +1,10 @@
-import React from 'react';
+import React from "react";
 
-const Table = ({ rows, columns }: any) => {
+interface TableProps {
+    rows: string[][];
+    columns: string[];
+}
+const Table = ({ rows, columns }: TableProps) => {
     return (
         <table style={{ width: "80%" }}>
             <thead>
@@ -14,9 +18,10 @@ const Table = ({ rows, columns }: any) => {
                 {rows.map((rowData: any, rowIndex: any) => (
                     <tr key={rowIndex}>
                         <th>{rowData[0]}</th>
-                        {rowData.map((cellData: any, cellIndex: any) => (
-                            cellIndex > 0 && <td key={cellIndex}>{cellData}</td>
-                        ))}
+                        {rowData.map(
+                            (cellData: any, cellIndex: any) =>
+                                cellIndex > 0 && <td key={cellIndex}>{cellData}</td>
+                        )}
                     </tr>
                 ))}
             </tbody>
