@@ -1,38 +1,23 @@
-export interface WineProp {
-    Alcohol: number | string;
-    "Malic Acid": number | string;
-    Ash: number | string;
-    "Alcalinity of ash": number | string;
-    Magnesium: number | string;
-    "Total phenols": number | string;
-    Flavanoids: number | string;
-    "Nonflavanoid phenols": number | string;
-    Proanthocyanins: number | string;
-    "Color intensity": number | string;
-    Hue: number | string;
-    Gamma?: number | string;
-    "OD280/OD315 of diluted wines": number | string;
-    Unknown: number | string;
-}
+import {
+    WineProp,
+    ItemCount,
+    FrequencyProps,
+    GenerateRowOfMeanMedianModeProps,
+} from "../interface/global";
 
-interface ItemCount {
-    [key: string]: {
-        frequency: number;
-        list: number[];
-    };
-}
 /**
  *
- * @param data of type WineProp[] and wine property
- * @returns object which contains the frequency and passed wine property list of each class alcohol
+ * @param data of type `WineProp[]` and `wineProperty`
+ * @returns an object of objects where each object is an alcohol class with property `frequency` and `list: `
  */
-export function structureWineClass(
+export function getAlcoholDataByClass(
     data: WineProp[],
     wineProperty: string
 ): ItemCount {
     const wineCountWithData: ItemCount = {};
     data.forEach((item: any) => {
         const winePropValue = Number(item[wineProperty]);
+
         if (wineCountWithData[item.Alcohol]) {
             wineCountWithData[item.Alcohol] = {
                 ...wineCountWithData[item.Alcohol],
@@ -46,17 +31,25 @@ export function structureWineClass(
             };
         }
     });
+
     return wineCountWithData;
 }
 
+/**
+ *
+ * @param data : array of number
+ * @returns : sorted data in ascending order
+ */
 export function sortData(data: number[]): number[] {
-    data.sort((a, b) => a - b); // minus when used with string, first convert it to number and then operation
+    data.sort((a, b) => a - b);
     return data;
 }
 
-interface FrequencyProps {
-    [key: string]: number;
-}
+/**
+ *
+ * @param data : array of number
+ * @returns : object of frequency of repetitive data
+ */
 export function getFrequency(data: number[]): FrequencyProps {
     const frequency: FrequencyProps = {};
     data.forEach((element) => {
@@ -64,18 +57,27 @@ export function getFrequency(data: number[]): FrequencyProps {
     });
     return frequency;
 }
-
+/**
+ *
+ * @param data : array of number
+ * @returns : mean value of passed array
+ */
 export function getMean(data: number[]): number {
     const sum = data.reduce((acc, current) => acc + current, 0);
     const mean = sum / data.length;
     return mean;
 }
 
+/**
+ *
+ * @param data : array of number
+ * @returns : median of list of numbers
+ */
 export function getMedian(data: number[]): number {
     const length = data.length;
     const sortedData = sortData(data);
     let median = 0;
-    const mid = (length / 2) - 1; // since array index starts from 0
+    const mid = length / 2 - 1; // since array index starts from 0
     if (length % 2 === 0) {
         const first = sortedData[mid];
         const second = sortedData[mid + 1];
@@ -86,11 +88,18 @@ export function getMedian(data: number[]): number {
     return median;
 }
 
+/**
+ *
+ * @param data : array of number
+ * @returns : stringified number with highest count/frequency
+ */
 export function getMode(data: number[]): string {
     const mode: string[] = [];
+
     const frequencyData = getFrequency(data);
     const frequencyValues = Object.values(frequencyData);
     const frequencyKeys = Object.keys(frequencyData);
+
     const max = Math.max(...frequencyValues); // returns max value, if such data eg: "1.23" is passed, it converts to number and then calculates max
 
     frequencyKeys.forEach((element) => {
@@ -101,32 +110,49 @@ export function getMode(data: number[]): string {
     return mode.toString();
 }
 
-interface GenerateRowOfMeanMedianModeProps {
-    wineProperty: string;
-    alcoholClass: string[];
-    alocholStructedData: ItemCount;
-}
+/**
+ *
+ * @param { alcoholClass, alocholDataByClass, wineProperty}
+ * @returns : structured data for tablular format
+ */
 export function generateRowsData({
     alcoholClass,
-    alocholStructedData,
+    alocholDataByClass,
     wineProperty,
 }: GenerateRowOfMeanMedianModeProps): string[][] {
     return [
         [
             `${wineProperty} Mean`,
             ...alcoholClass.map((item) =>
-                getMean(alocholStructedData[item].list).toFixed(3)
+                getMean(alocholDataByClass[item].list).toFixed(3)
             ),
         ],
         [
             `${wineProperty} Median`,
             ...alcoholClass.map((item) =>
-                getMedian(alocholStructedData[item].list).toFixed(3)
+                getMedian(alocholDataByClass[item].list).toFixed(3)
             ),
         ],
         [
             `${wineProperty} Mode`,
-            ...alcoholClass.map((item) => getMode(alocholStructedData[item].list)),
+            ...alcoholClass.map((item) => getMode(alocholDataByClass[item].list)),
         ],
     ];
+}
+
+/**
+ *
+ * @param wineData
+ * @returns update WineData with Gamma property
+ */
+export function addGamma(wineData: WineProp[]): WineProp[] {
+    const updatedData = wineData.map((wineItem) => {
+        const { Ash, Hue, Magnesium } = wineItem;
+        const gamma = (Number(Ash) * Number(Hue)) / Number(Magnesium);
+        return {
+            ...wineItem,
+            Gamma: Number(gamma.toFixed(2)),
+        };
+    });
+    return updatedData;
 }

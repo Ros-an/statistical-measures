@@ -1,7 +1,7 @@
 import Table from "../Table/Table";
+import { WineProp } from "../../interface/global";
 import {
-    structureWineClass,
-    WineProp,
+    getAlcoholDataByClass,
     generateRowsData,
 } from "../../utils/helpers";
 
@@ -11,12 +11,12 @@ interface MeasureProps {
 }
 
 function Measure({ wineData, wineProperty }: MeasureProps) {
-    const alocholStructedData = structureWineClass(wineData, wineProperty);
-    const alcoholClass = Object.keys(alocholStructedData);
+    const alocholDataByClass = getAlcoholDataByClass(wineData, wineProperty);
+    const alcoholClass = Object.keys(alocholDataByClass);
 
     const rows = generateRowsData({
         alcoholClass,
-        alocholStructedData,
+        alocholDataByClass,
         wineProperty,
     });
     const columns = ["Measure", ...alcoholClass];
