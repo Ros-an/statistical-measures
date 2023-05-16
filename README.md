@@ -2,7 +2,7 @@
 This project contains statistical measures calculations.
 
 ## Screen Shot
-![statistical-measure-ss](https://github.com/Ros-an/statistical-measures/assets/76640700/79993642-1a97-465e-b912-9af9a0e05be6)
+![statistical-measure-ss](https://github.com/Ros-an/statistical-measures/assets/76640700/ea0710ec-670f-42f3-ade2-4dd642905b37)
 
 ## How to run this project on your local machine
 ### Installation
