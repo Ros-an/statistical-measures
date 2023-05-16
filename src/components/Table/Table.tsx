@@ -1,7 +1,7 @@
 import React from "react";
 
 interface TableProps {
-    rows: string[][];
+    rows: (string | number)[][];
     columns: string[];
 }
 /**

@@ -7,8 +7,9 @@ import {
 
 /**
  *
- * @param data of type `WineProp[]` and `wineProperty`
- * @returns an object of objects where each object is an alcohol class with property `frequency` and `list: `
+ * @param data (wine dataset)` and `wineProperty`(eg: Gamma/Flavanoids)
+ * @returns an object of objects where each object is an alcohol class with property `frequency`
+ * and `list: contains data of wineProperty(eg: Gamma/Flavanoids) passed `
  */
 export function getAlcoholDataByClass(
     data: WineProp[],
@@ -16,7 +17,7 @@ export function getAlcoholDataByClass(
 ): ItemCount {
     const wineCountWithData: ItemCount = {};
     data.forEach((item: any) => {
-        const winePropValue = Number(item[wineProperty]);
+        const winePropValue = Number(item[wineProperty]); // convert to number as some data may be string
 
         if (wineCountWithData[item.Alcohol]) {
             wineCountWithData[item.Alcohol] = {
@@ -47,8 +48,8 @@ export function sortData(data: number[]): number[] {
 
 /**
  *
- * @param data : array of number
- * @returns : object of frequency of repetitive data
+ * @param data : array of number(eg: [1, 2, 1, 2, 3, 4])
+ * @returns : object(eg: { 1: 2, 2: 2, 3:1, 4: 1})
  */
 export function getFrequency(data: number[]): FrequencyProps {
     const frequency: FrequencyProps = {};
@@ -57,6 +58,7 @@ export function getFrequency(data: number[]): FrequencyProps {
     });
     return frequency;
 }
+
 /**
  *
  * @param data : array of number
@@ -81,9 +83,9 @@ export function getMedian(data: number[]): number {
     if (length % 2 === 0) {
         const first = sortedData[mid];
         const second = sortedData[mid + 1];
-        median = (first + second) / 2;
+        median = (first + second) / 2; // incase length is even
     } else {
-        median = sortedData[Math.ceil(mid)];
+        median = sortedData[Math.ceil(mid)]; //incase length is odd
     }
     return median;
 }
@@ -94,17 +96,18 @@ export function getMedian(data: number[]): number {
  * @returns : stringified number with highest count/frequency
  */
 export function getMode(data: number[]): string {
-    const mode: string[] = [];
+    const mode: number[] = [];
 
     const frequencyData = getFrequency(data);
     const frequencyValues = Object.values(frequencyData);
     const frequencyKeys = Object.keys(frequencyData);
 
-    const max = Math.max(...frequencyValues); // returns max value, if such data eg: "1.23" is passed, it converts to number and then calculates max
+    const max = Math.max(...frequencyValues); // returns max value
 
     frequencyKeys.forEach((element) => {
         if (frequencyData[element] === max) {
-            mode.push(Number(element).toFixed(3));
+            const roundOffValue = roundOffNumber(Number(element), 1000);
+            mode.push(roundOffValue);
         }
     });
     return mode.toString();
@@ -113,24 +116,24 @@ export function getMode(data: number[]): string {
 /**
  *
  * @param { alcoholClass, alocholDataByClass, wineProperty}
- * @returns : structured data for tablular format
+ * @returns : structured data for tablular format (eg: [["Mean", 13, 12, 11],["Median", 3, 4, 5],["Mode", 4, 3, 5]])
  */
 export function generateRowsData({
     alcoholClass,
     alocholDataByClass,
     wineProperty,
-}: GenerateRowOfMeanMedianModeProps): string[][] {
+}: GenerateRowOfMeanMedianModeProps): (string | number)[][] {
     return [
         [
             `${wineProperty} Mean`,
             ...alcoholClass.map((item) =>
-                getMean(alocholDataByClass[item].list).toFixed(3)
+                roundOffNumber(getMean(alocholDataByClass[item].list), 1000)
             ),
         ],
         [
             `${wineProperty} Median`,
             ...alcoholClass.map((item) =>
-                getMedian(alocholDataByClass[item].list).toFixed(3)
+                roundOffNumber(getMedian(alocholDataByClass[item].list), 1000)
             ),
         ],
         [
@@ -143,7 +146,7 @@ export function generateRowsData({
 /**
  *
  * @param wineData
- * @returns update WineData with Gamma property
+ * @returns update WineData set with Gamma property
  */
 export function addGamma(wineData: WineProp[]): WineProp[] {
     const updatedData = wineData.map((wineItem) => {
@@ -155,4 +158,13 @@ export function addGamma(wineData: WineProp[]): WineProp[] {
         };
     });
     return updatedData;
+}
+
+/**
+ * @param,
+ * @return round off to 3 decimal places
+ */
+
+export function roundOffNumber(value: number, roundOffBy: number) {
+    return Math.round(value * roundOffBy) / roundOffBy;
 }
