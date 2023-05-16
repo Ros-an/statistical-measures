@@ -161,8 +161,8 @@ export function addGamma(wineData: WineProp[]): WineProp[] {
 }
 
 /**
- * @param,
- * @return round off to 3 decimal places
+ * @param value: floating point number, roundOffBy: eg: 1000, means round off by 3 decimal places
+ * @return round off to decimal places
  */
 
 export function roundOffNumber(value: number, roundOffBy: number) {
