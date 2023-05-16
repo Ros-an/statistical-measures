@@ -4,6 +4,14 @@ interface TableProps {
     rows: string[][];
     columns: string[];
 }
+/**
+ * 
+ * @param accepts an object with property 
+ * 1. rows : array of arrays, where 1st array contain mean value , 2nd array contains median value, and 3rd array contains mode of each Alcohol class for a property.
+ * 2. columns: field name 'Measure' and Alochol class
+ * 
+ * @returns table
+ */
 const Table = ({ rows, columns }: TableProps) => {
     return (
         <table style={{ width: "80%" }}>

@@ -9,7 +9,12 @@ interface MeasureProps {
     wineProperty: string;
     wineData: WineProp[];
 }
-
+/**
+ * 
+ * @param accepts an object of two properties
+ * 1. wineData: dataset
+ * 2. wineProperty: wine property on which measure is based
+ */
 function Measure({ wineData, wineProperty }: MeasureProps) {
     const alocholDataByClass = getAlcoholDataByClass(wineData, wineProperty);
     const alcoholClass = Object.keys(alocholDataByClass);
