@@ -1,27 +1,22 @@
-import Table from './components/Table/Table';
 import wineData from "./wine-data.json";
-import { getMean, getMedian, getMode, structureWineClass } from './utils/helpers';
+import Measure from './components/Measure/Measure';
 
 const App = () => {
-  const wineProperty = "Flavanoids"
-  const alocholStructedData = structureWineClass(wineData, wineProperty);
 
-  console.log(alocholStructedData);
-  // console.log("median", median([1, 4, 5, 2, 3, 8, 9]))
-  // console.log(mode())
-  const alcoholClass = Object.keys(alocholStructedData);
-  const rows = [
-    [`${wineProperty} Mean`, ...alcoholClass.map((item) => getMean(alocholStructedData[item].list).toFixed(3))],
-    [`${wineProperty} Median`, ...alcoholClass.map((item) => getMedian(alocholStructedData[item].list))],
-    [`${wineProperty} Mode`, ...alcoholClass.map((item) => getMode(alocholStructedData[item].list))],
-  ];
+  const gammaAddedData = wineData.map((wineItem) => {
+    const { Ash, Hue, Magnesium } = wineItem;
+    const gamma = (Number(Ash) * Number(Hue)) / Number(Magnesium);
+    return {
+      ...wineItem,
+      Gamma: Number(gamma.toFixed(2))
+    }
+  });
 
-  const columns = ["Measure", ...alcoholClass];
 
   return (
-    <main className='main'>
-      <h1>Table Flavanoids</h1>
-      <Table rows={rows} columns={columns} />
+    <main>
+      <Measure wineProperty={'Flavanoids'} wineData={wineData} />
+      <Measure wineProperty={'Gamma'} wineData={gammaAddedData} />
     </main>
   );
 };
